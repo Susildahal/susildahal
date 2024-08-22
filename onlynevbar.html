@@ -1,0 +1,338 @@
+]<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px;
+            padding-right: 30px;
+            background-color: white;
+            color: black;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+            color: black;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-links ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li {
+            margin-left: 20px;
+            position: relative;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            color: black;
+            padding: 7px 15px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            font-weight: normal;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Hover Effect */
+        .navbar-links a:hover {
+            color: red;
+            transform: scale(1.05);
+        }
+
+        /* Underline Animation */
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -5px;
+            width: 0;
+            height: 2px;
+            background-color: red;
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        /* Focus Effect */
+        .navbar-links a:focus {
+            outline: none;
+           /* Red outline on focus */
+        }
+
+        .toggle-button {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .toggle-button .bar {
+            height: 3px;
+            width: 25px;
+            background-color: black;
+            margin: 4px 0;
+        }
+
+        /* Dropdown Styling */
+        .dropdown-content {
+            margin-top: 0;
+            display: none;
+            position: absolute;
+            background-color: #f0f0f0;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            min-width: 200px;
+            border-radius: 10%;
+        }
+
+        .dropdown:hover .dropdown-content,
+        .dropdown-content:hover {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            white-space: nowrap;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #e0e0e0;
+        }
+
+        .dropdown-icon {
+            margin-left: 5px;
+            color: black;
+        }
+
+        /* Active class */
+        .navbar-links li.active a {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .toggle-button {
+                display: flex;
+            }
+
+            .navbar-links {
+                display: none;
+                width: 100%;
+            }
+
+            .navbar-links.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                background-color: white;
+                width: 100%;
+                height: calc(100vh - 60px);
+                z-index: 1000;
+                overflow-y: auto;
+            }
+
+            .navbar-links ul {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .navbar-links ul li {
+                text-align: center;
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .navbar-links ul li a {
+                width: 100%;
+            }
+
+            .dropdown-content {
+                position: static;
+                margin-top: 5px;
+            }
+
+            .overlay.active {
+                display: block;
+            }
+
+            body.nav-open {
+                overflow: hidden;
+            }
+        }
+
+
+        .social-media-container {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .social-media-group {
+            display: flex;
+            flex-direction: column;
+            margin: 10px 0;
+        }
+
+        .social-icon {
+            display: block;
+            margin: 5px 0;
+            position: relative;
+        }
+
+        .social-icon img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: black;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -120%);
+            white-space: nowrap;
+            font-size:12px;
+        }
+
+        .social-icon:hover .tooltip {
+            display: block;
+        }
+
+        /* Positioning for different screen sizes */
+        .social-media-left {
+            left: 20px;
+        }
+
+        .social-media-right {
+            right: 20px;
+        }
+        @media (max-width:768px) {
+            .social-icon img {
+            width:30px;
+            height:30px;
+            object-fit: cover;
+
+        
+        }
+      
+    
+            
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand-title">Hill Side</div>
+        <a href="#" class="toggle-button" id="toggle-button">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </a>
+        <div class="navbar-links" id="navbar-links">
+            <ul>
+                <li class="active"><a href="index.html" target="_self">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" target="_self">About Us <span class="dropdown-icon">&#9660;</span></a>
+                    <div class="dropdown-content">
+                        <a href="missionandvission.html" target="_self">Mission and Vision</a>
+                        <a href="#" target="_self">History</a>
+                        <a href="teachers-datails.html" target="_self">Teacher Details</a>
+                        <a href="whyhillside.html" target="_self">Why Hill Side</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" target="_self">Our Course <span class="dropdown-icon">&#9660;</span></a>
+                    <div class="dropdown-content">
+                        <a href="primary.html" target="_self">Primary</a>
+                        <a href="secondary.html" target="_self">Secondary</a>
+                    </div>
+                </li>
+                <li><a href="contract.html" target="_self">Contact Us</a></li>
+                <li><a href="gallery.html" target="_self">Gallery</a></li>
+                <li class="dropdown">
+                    <a href="#" target="_self">Other <span class="dropdown-icon">&#9660;</span></a>
+                    <div class="dropdown-content">
+                        <a href="caleander.html" target="_self">Calendar</a>
+                        <a href="#" target="_self">Notice</a>
+                        <a href="#" target="_self">Service</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="social-media-container social-media-left">
+        <div class="social-media-group">
+            <a href="tel:+1234567890" class="social-icon" id="phone">
+                <img src="image/call.png" alt="Phone">
+                <span class="tooltip">+1234567890</span>
+            </a>
+            <a href="https://www.facebook.com/groups/724459442800424" class="social-icon" id="facebook">
+                <img src="image/fb.png" alt="Facebook">
+            </a>
+        </div>
+    </div>
+    <div class="social-media-container social-media-right">
+        <div class="social-media-group">
+            <a href="https://wa.me/1234567890" class="social-icon" id="whatsapp">
+                <img src="image/whatapp.png" alt="WhatsApp">
+                <span class="tooltip">+1234567890</span>
+            </a>
+            <a href="mailto:susildahal234@gmail.com" class="social-icon" id="gmail">
+                <img src="image/gmail.png" alt="Gmail">
+                <span class="tooltip">susildahal234@gmail.com</span>
+            </a>
+            <a href="viber://chat?number=9863652183" class="social-icon" id="viber">
+                <img src="image/viber.png" alt="Viber">
+                <span class="tooltip">9863652183</span>
+            </a>
+        </div>
+    </div>
+    <script src="script.js">
+    
+    
+    </script>
+    
+</body>
+</html>
